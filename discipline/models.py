@@ -1,4 +1,7 @@
+from django.contrib.auth import get_user_model
 from django.db import models
+
+user_model = get_user_model()
 
 
 class Discipline(models.Model):
@@ -6,6 +9,8 @@ class Discipline(models.Model):
 
     name = models.CharField(max_length=50, verbose_name='название')
     short_description = models.TextField(blank=True, default='', max_length=500, verbose_name='краткое описание')
+
+    teachers = models.ManyToManyField(user_model, related_name='disciplines')
 
     class Meta:
         verbose_name = 'дисциплина'
@@ -18,7 +23,7 @@ class Discipline(models.Model):
 class Section(models.Model):
     """Раздел дисциплины"""
 
-    name = models.CharField(max_length=50, verbose_name='название')
+    name = models.CharField(max_length=50, verbose_name='название', unique=True)
 
     class Meta:
         verbose_name = 'раздел дисциплины'

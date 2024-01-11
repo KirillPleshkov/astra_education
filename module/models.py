@@ -16,10 +16,6 @@ class ModuleFiles(models.Model):
         verbose_name = 'файл блока'
         verbose_name_plural = 'файлы блока'
 
-        constraints = [
-            UniqueConstraint(fields=['module', 'position'], name='unique_positions_files')
-        ]
-
     def __str__(self):
         return self.file.name.split('/')[-1]
 
@@ -38,10 +34,6 @@ class Module(models.Model):
     class Meta:
         verbose_name = 'блок программы'
         verbose_name_plural = 'блоки программ'
-
-        constraints = [
-            UniqueConstraint(fields=['discipline', 'section', 'position'], name='unique_positions')
-        ]
 
     def __str__(self):
         return self.name
