@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 
-from discipline.models import Discipline, Section
+from discipline.models import Discipline, Section, DisciplineUser
 from module.models import Module
 
 user_model = get_user_model()
@@ -22,8 +22,11 @@ class ModulesInline(admin.TabularInline):
 
 
 class TeachersInline(admin.TabularInline):
-    model = user_model.disciplines.through
+    model = DisciplineUser
     extra = 0
+    autocomplete_fields = ('user',)
+    verbose_name = 'преподаватель'
+    verbose_name_plural = 'преподаватели'
 
 
 @admin.register(Discipline)
