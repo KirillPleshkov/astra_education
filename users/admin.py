@@ -3,19 +3,18 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 
-from discipline.models import DisciplineUser
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
 from users.models import Role
 
 user_model = get_user_model()
 
 
-class DisciplinesInline(admin.TabularInline):
-    model = DisciplineUser
-    extra = 0
-    autocomplete_fields = ('discipline',)
-    verbose_name = 'дисциплина'
-    verbose_name_plural = 'дисциплины'
+# class DisciplinesInline(admin.TabularInline):
+#     model = DisciplineUser
+#     extra = 0
+#     autocomplete_fields = ('discipline',)
+#     verbose_name = 'дисциплина'
+#     verbose_name_plural = 'дисциплины'
 
 
 @admin.register(user_model)
@@ -29,7 +28,7 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
 
-    inlines = (DisciplinesInline,)
+    # inlines = (DisciplinesInline,)
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
