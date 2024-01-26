@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'discipline',
     'block',
     'module',
-    'curriculum'
+    'curriculum',
+    'skills_products'
 ]
 
 MIDDLEWARE = [
