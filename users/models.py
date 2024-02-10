@@ -38,8 +38,8 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=100, verbose_name='фамилия')
 
     role = models.ForeignKey('Role', on_delete=models.PROTECT, verbose_name='роль', default=get_student_role)
-    curriculum = models.ForeignKey('curriculum.Curriculum', on_delete=models.PROTECT, verbose_name='учебный план', null=True,
-                                   blank=True)
+    curriculum = models.ForeignKey('curriculum.Curriculum', on_delete=models.PROTECT, verbose_name='учебный план',
+                                   null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
