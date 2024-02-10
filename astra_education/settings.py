@@ -26,11 +26,12 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
+    'curriculum',
     'users',
     'discipline',
     'block',
     'module',
-    'curriculum',
+
     'skills_products'
 ]
 

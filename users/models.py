@@ -4,7 +4,8 @@ from django.db import models
 
 
 class CustomUserManager(BaseUserManager):
-    """Менеджер пользователя реализующий хранение пользователя по email"""
+    """Менеджер пользователя реализующий создание пользователя по email"""
+
     def create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError('The Email must be set')
@@ -25,6 +26,10 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+def get_student_role():
+    return Role.objects.get(name='Студент').id
+
+
 class CustomUser(AbstractUser):
     """Модель пользователя"""
     username = None
@@ -32,7 +37,9 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100, verbose_name='имя')
     last_name = models.CharField(max_length=100, verbose_name='фамилия')
 
-    role = models.ForeignKey('Role', on_delete=models.PROTECT, verbose_name='роль', blank=True, null=True)
+    role = models.ForeignKey('Role', on_delete=models.PROTECT, verbose_name='роль', default=get_student_role)
+    curriculum = models.ForeignKey('curriculum.Curriculum', on_delete=models.PROTECT, verbose_name='учебный план', null=True,
+                                   blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 from discipline.models import Discipline
@@ -40,12 +41,14 @@ class CurriculumDiscipline(models.Model):
 
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE, verbose_name='учебный план')
     discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE, verbose_name='дисциплина')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='преподаватель')
+
     semester = models.IntegerField(verbose_name='семестр')
 
     class Meta:
         verbose_name = 'дисциплина учебного плана'
         verbose_name_plural = 'дисциплины учебного плана'
-        unique_together = ('discipline', 'curriculum', 'semester')
+        unique_together = ('discipline', 'curriculum', 'semester', 'user')
 
     def __str__(self):
         return f'Учебный план: {self.curriculum.name}, дисциплина: {self.discipline.name}'

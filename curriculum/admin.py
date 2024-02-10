@@ -7,7 +7,7 @@ class DisciplinesInline(admin.TabularInline):
     model = CurriculumDiscipline
     extra = 0
     autocomplete_fields = ('discipline',)
-    ordering = ('semester',)
+    ordering = ('semester', 'discipline')
 
 
 @admin.register(Curriculum)
