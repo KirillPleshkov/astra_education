@@ -4,8 +4,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 
 from curriculum.models import CurriculumDiscipline
-from users.forms import CustomUserCreationForm, CustomUserChangeForm
-from users.models import Role
+from user.forms import CustomUserCreationForm, CustomUserChangeForm
+from user.models import Role
 
 user_model = get_user_model()
 

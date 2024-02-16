@@ -3,6 +3,17 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class Role(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name='название')
+
+    class Meta:
+        verbose_name = 'роль'
+        verbose_name_plural = 'роли'
+
+    def __str__(self):
+        return self.name
+
+
 class CustomUserManager(BaseUserManager):
     """Менеджер пользователя реализующий создание пользователя по email"""
 
@@ -49,12 +60,4 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-class Role(models.Model):
-    name = models.CharField(max_length=50, unique=True, verbose_name='название')
 
-    class Meta:
-        verbose_name = 'роль'
-        verbose_name_plural = 'роли'
-
-    def __str__(self):
-        return self.name

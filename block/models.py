@@ -1,13 +1,9 @@
-from pytils import translit
+
 from django.db import models
-from django.db.models import UniqueConstraint
-from pytz import unicode
+from django.utils.deconstruct import deconstructible
 
 from discipline.models import Discipline
 from module.models import Module
-
-import unicodedata
-import re
 
 from pytils.translit import slugify
 
@@ -16,18 +12,32 @@ def unique_slugify(slug):
     return '.'.join([slugify(el) for el in slug.split('.')])
 
 
-def path_and_rename(path):
-    def get_file_path(instance, filename):
-        full_path = ''.join([path, unique_slugify(filename)])
+# def path_and_rename(path):
+#     def get_file_path(instance, filename):
+#         full_path = ''.join([path, unique_slugify(filename)])
+#         return full_path
+#
+#     return get_file_path
+
+
+@deconstructible
+class PathRename(object):
+
+    def __init__(self, sub_path):
+        self.path = sub_path
+
+    def __call__(self, instance, filename):
+        full_path = ''.join([self.path, unique_slugify(filename)])
         return full_path
 
-    return get_file_path
+
+path_and_rename = PathRename("module_files/%Y/%m/%d/")
 
 
 class BlockFiles(models.Model):
     """Файлы привязанные к конкретному блоку"""
 
-    file = models.FileField(upload_to=path_and_rename('module_files/%Y/%m/%d/'), verbose_name='файл')
+    file = models.FileField(upload_to=path_and_rename, verbose_name='файл')
     position = models.IntegerField(verbose_name='позиция')
 
     block = models.ForeignKey('Block', on_delete=models.CASCADE, related_name='files', verbose_name='блок')

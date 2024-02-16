@@ -18,6 +18,3 @@ class CurriculumAdmin(admin.ModelAdmin):
 @admin.register(EducationalLevel)
 class EducationalLevelAdmin(admin.ModelAdmin):
     ...
-
-
-
