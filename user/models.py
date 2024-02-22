@@ -1,6 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+from astra_education import settings
 
 
 class Role(models.Model):
@@ -38,7 +41,7 @@ class CustomUserManager(BaseUserManager):
 
 
 def get_student_role():
-    return Role.objects.get(name='Студент').id
+    return Role.objects.get(name=settings.STUDENT_NAME).id
 
 
 class CustomUser(AbstractUser):
@@ -49,6 +52,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=100, verbose_name='фамилия')
 
     role = models.ForeignKey('Role', on_delete=models.PROTECT, verbose_name='роль', default=get_student_role)
+    linguist_roles = models.ManyToManyField('LinguistRole', through='LinguistRoleUser', related_name='users')
     curriculum = models.ForeignKey('curriculum.Curriculum', on_delete=models.PROTECT, verbose_name='учебный план',
                                    null=True, blank=True)
 
@@ -60,4 +64,27 @@ class CustomUser(AbstractUser):
         return self.email
 
 
+class LinguistRole(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name='название')
 
+    class Meta:
+        verbose_name = 'роль лингвиста'
+        verbose_name_plural = 'роли лингвиста'
+
+    def __str__(self):
+        return self.name
+
+
+class LinguistRoleUser(models.Model):
+    """Связь многие ко многим ролей лингвистов и пользователей"""
+
+    linguist_role = models.ForeignKey(LinguistRole, on_delete=models.CASCADE, verbose_name='роль лингвиста')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='пользователь')
+
+    class Meta:
+        verbose_name = 'роль лингвиста'
+        verbose_name_plural = 'роли лингвиста'
+        unique_together = ('linguist_role', 'user')
+
+    def __str__(self):
+        return f'Роль лингвиста: {self.linguist_role.name}, пользователь: {self.user}'

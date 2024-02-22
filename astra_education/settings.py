@@ -79,7 +79,6 @@ DATABASES = {
     }
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -105,7 +104,6 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173'
 ]
 
-
 LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
@@ -123,3 +121,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'user.CustomUser'
+
+STUDENT_NAME = 'Студент'

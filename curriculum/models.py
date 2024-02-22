@@ -41,14 +41,31 @@ class CurriculumDiscipline(models.Model):
 
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE, verbose_name='учебный план')
     discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE, verbose_name='дисциплина')
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='преподаватель')
+    users = models.ManyToManyField(get_user_model(), through='CurriculumDisciplineUser', verbose_name='преподаватели',
+                                   related_name='curriculum_disciplines')
 
     semester = models.IntegerField(verbose_name='семестр')
 
     class Meta:
         verbose_name = 'дисциплина учебного плана'
         verbose_name_plural = 'дисциплины учебного плана'
-        unique_together = ('discipline', 'curriculum', 'semester', 'user')
+        unique_together = ('discipline', 'curriculum', 'semester')
 
     def __str__(self):
-        return f'Учебный план: {self.curriculum.name}, дисциплина: {self.discipline.name}'
+        return f'Учебный план: {self.curriculum.name}, дисциплина: {self.discipline.name}, семестр: {self.semester}'
+
+
+class CurriculumDisciplineUser(models.Model):
+    """Связь многие ко многим между учебным планом и дисциплиной и преподавателем"""
+
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='преподаватель')
+    curriculum_discipline = models.ForeignKey(CurriculumDiscipline, on_delete=models.CASCADE,
+                                              verbose_name='дисциплина учебного плана')
+
+    class Meta:
+        verbose_name = 'преподаватель определенной дисциплины'
+        verbose_name_plural = 'преподаватели определенной дисциплины'
+        unique_together = ('user', 'curriculum_discipline')
+
+    def __str__(self):
+        return f'{self.curriculum_discipline}, преподаватель: {self.user}'

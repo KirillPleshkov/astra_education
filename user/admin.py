@@ -3,18 +3,24 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 
-from curriculum.models import CurriculumDiscipline
+from astra_education import settings
+from curriculum.models import CurriculumDiscipline, CurriculumDisciplineUser
 from user.forms import CustomUserCreationForm, CustomUserChangeForm
-from user.models import Role
+from user.models import Role, LinguistRole, LinguistRoleUser
 
 user_model = get_user_model()
 
 
 class DisciplinesInline(admin.TabularInline):
-    model = CurriculumDiscipline
+    model = CurriculumDisciplineUser
     extra = 0
-    autocomplete_fields = ('discipline',)
-    ordering = ('semester', 'discipline')
+    autocomplete_fields = ('curriculum_discipline',)
+
+
+class LinguistRoleInline(admin.TabularInline):
+    model = LinguistRoleUser
+    extra = 0
+    autocomplete_fields = ('linguist_role',)
 
 
 @admin.register(user_model)
@@ -28,7 +34,12 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
 
-    inlines = (DisciplinesInline,)
+    inlines = (LinguistRoleInline, DisciplinesInline)
+
+    def get_inline_instances(self, request, obj=None):
+        if not obj or obj.role.name == settings.STUDENT_NAME:
+            return []
+        return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
@@ -52,6 +63,11 @@ class CustomUserAdmin(UserAdmin):
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     ...
+
+
+@admin.register(LinguistRole)
+class LinguistRoleAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
 
 
 admin.site.unregister(Group)
