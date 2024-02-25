@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 import environ
 
@@ -123,3 +124,8 @@ MEDIA_URL = '/media/'
 AUTH_USER_MODEL = 'user.CustomUser'
 
 STUDENT_NAME = 'Студент'
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}

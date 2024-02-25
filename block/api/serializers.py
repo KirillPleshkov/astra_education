@@ -11,11 +11,12 @@ class BlockFilesSerializer(serializers.ModelSerializer):
 
 
 class BlockSerializer(serializers.ModelSerializer):
-    files = BlockFilesSerializer(many=True, read_only=True)
+    files = BlockFilesSerializer(many=True)
 
     class Meta:
         model = Block
         fields = '__all__'
+
 
 
 
