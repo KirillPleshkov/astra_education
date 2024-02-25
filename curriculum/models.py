@@ -69,3 +69,8 @@ class CurriculumDisciplineUser(models.Model):
 
     def __str__(self):
         return f'{self.curriculum_discipline}, преподаватель: {self.user}'
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if not (self.user.role == get_user_model().Roles.TEACHER):
+            raise ValidationError('Пользователь с ролью студент не может быть преподавателем дисциплины')

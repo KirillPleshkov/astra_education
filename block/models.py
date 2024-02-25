@@ -12,14 +12,6 @@ def unique_slugify(slug):
     return '.'.join([slugify(el) for el in slug.split('.')])
 
 
-# def path_and_rename(path):
-#     def get_file_path(instance, filename):
-#         full_path = ''.join([path, unique_slugify(filename)])
-#         return full_path
-#
-#     return get_file_path
-
-
 @deconstructible
 class PathRename(object):
 
@@ -39,6 +31,7 @@ class BlockFiles(models.Model):
 
     file = models.FileField(upload_to=path_and_rename, verbose_name='файл')
     position = models.IntegerField(verbose_name='позиция')
+    is_saved = models.BooleanField(verbose_name='Сохранен', default=False)
 
     block = models.ForeignKey('Block', on_delete=models.CASCADE, related_name='files', verbose_name='блок')
 

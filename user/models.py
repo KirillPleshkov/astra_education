@@ -6,17 +6,6 @@ from django.db import models
 from astra_education import settings
 
 
-class Role(models.Model):
-    name = models.CharField(max_length=50, unique=True, verbose_name='название')
-
-    class Meta:
-        verbose_name = 'роль'
-        verbose_name_plural = 'роли'
-
-    def __str__(self):
-        return self.name
-
-
 class CustomUserManager(BaseUserManager):
     """Менеджер пользователя реализующий создание пользователя по email"""
 
@@ -40,10 +29,6 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-def get_student_role():
-    return Role.objects.get(name=settings.STUDENT_NAME).id
-
-
 class CustomUser(AbstractUser):
     """Модель пользователя"""
     username = None
@@ -51,8 +36,17 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100, verbose_name='имя')
     last_name = models.CharField(max_length=100, verbose_name='фамилия')
 
-    role = models.ForeignKey('Role', on_delete=models.PROTECT, verbose_name='роль', default=get_student_role)
-    linguist_roles = models.ManyToManyField('LinguistRole', through='LinguistRoleUser', related_name='users')
+    class Roles(models.TextChoices):
+        STUDENT = "S", "Студент"
+        TEACHER = "T", "Преподаватель"
+
+    role = models.CharField(
+        max_length=1,
+        choices=Roles.choices,
+        default=Roles.STUDENT,
+        verbose_name='роль'
+    )
+    linguist_roles = models.ManyToManyField('LinguistsRoles', blank=True, verbose_name='Лингвистическая роль')
     curriculum = models.ForeignKey('curriculum.Curriculum', on_delete=models.PROTECT, verbose_name='учебный план',
                                    null=True, blank=True)
 
@@ -63,28 +57,28 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.role == get_user_model().Roles.STUDENT and self.linguist_roles.count():
+            raise ValidationError('Пользователь с ролью студент не может иметь лингвистическую роль')
 
-class LinguistRole(models.Model):
-    name = models.CharField(max_length=50, unique=True, verbose_name='название')
+
+class LinguistsRoles(models.Model):
+    class LinguistsRolesChose(models.TextChoices):
+        MODULE_CHANGE = "M", "Лингвист модулей"
+        DISCIPLINE_CHANGE = "D", "Лингвист дисциплин"
+        CURRICULUM_CHANGE = "C", "Лингвист учебных планов"
+
+    linguist_role = models.CharField(
+        max_length=1,
+        choices=LinguistsRolesChose.choices,
+        verbose_name='роль',
+        unique=True
+    )
 
     class Meta:
         verbose_name = 'роль лингвиста'
         verbose_name_plural = 'роли лингвиста'
 
     def __str__(self):
-        return self.name
-
-
-class LinguistRoleUser(models.Model):
-    """Связь многие ко многим ролей лингвистов и пользователей"""
-
-    linguist_role = models.ForeignKey(LinguistRole, on_delete=models.CASCADE, verbose_name='роль лингвиста')
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='пользователь')
-
-    class Meta:
-        verbose_name = 'роль лингвиста'
-        verbose_name_plural = 'роли лингвиста'
-        unique_together = ('linguist_role', 'user')
-
-    def __str__(self):
-        return f'Роль лингвиста: {self.linguist_role.name}, пользователь: {self.user}'
+        return self.LinguistsRolesChose(self.linguist_role).label

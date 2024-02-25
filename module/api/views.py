@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -29,11 +29,4 @@ class ModuleViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response({"post": serializer.data})
-
-        # if serializer.is_valid():
-        #     print(serializer)
-        #     return Response({'status': 'password set'})
-        # else:
-        #     return Response(serializer.errors,
-        #                     status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data)

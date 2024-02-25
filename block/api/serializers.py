@@ -10,8 +10,16 @@ class BlockFilesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class BlockFilesToUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BlockFiles
+        fields = '__all__'
+        read_only_fields = ('file',)
+
+
 class BlockSerializer(serializers.ModelSerializer):
-    files = BlockFilesSerializer(many=True)
+    files = BlockFilesToUpdateSerializer(many=True)
 
     class Meta:
         model = Block
