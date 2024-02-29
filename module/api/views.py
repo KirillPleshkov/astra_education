@@ -30,3 +30,19 @@ class ModuleViewSet(viewsets.ViewSet):
         serializer.save()
 
         return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def list(self, request):
+        queryset = self.queryset
+        module_name = request.query_params.get('name')
+
+        if module_name:
+            serializer = self.serializer_class(queryset.filter(name__icontains=module_name), many=True)
+        else:
+            serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)

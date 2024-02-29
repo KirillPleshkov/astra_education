@@ -18,6 +18,10 @@ class ModuleSerializer(serializers.ModelSerializer):
         model = Module
         fields = '__all__'
 
+    def create(self, validated_data):
+        module_name = self.validated_data['name']
+        return Module.objects.create(name=module_name)
+
     def _block_update_or_add(self, block_data, instance_id):
         block_id = block_data.get("id")
 
