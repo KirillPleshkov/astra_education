@@ -11,6 +11,7 @@ user_model = get_user_model()
 class ModulesInline(admin.TabularInline):
     model = DisciplineModule
     autocomplete_fields = ('module',)
+    ordering = ('position',)
     extra = 0
 
 

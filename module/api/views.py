@@ -15,14 +15,14 @@ class ModuleViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         module = get_object_or_404(self.queryset, pk=pk)
-        self.check_object_permissions(self.request, module)
+        # self.check_object_permissions(self.request, module)
 
         serializer = self.serializer_class(module)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
         instance = get_object_or_404(self.queryset, pk=pk)
-        self.check_object_permissions(self.request, instance)
+        # self.check_object_permissions(self.request, instance)
 
         serializer = self.serializer_class(data=request.data, instance=instance)
 
@@ -38,11 +38,6 @@ class ModuleViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def list(self, request):
-        queryset = self.queryset
         module_name = request.query_params.get('name')
-
-        if module_name:
-            serializer = self.serializer_class(queryset.filter(name__icontains=module_name), many=True)
-        else:
-            serializer = self.serializer_class(queryset, many=True)
+        serializer = self.serializer_class(self.queryset.filter(name__icontains=module_name), many=True)
         return Response(serializer.data)

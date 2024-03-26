@@ -7,5 +7,6 @@ urlpatterns = [
     path('user/', include('user.api.urls')),
     path('discipline/', include('discipline.api.urls')),
     path('module/', include('module.api.urls')),
-    path('block/', include('block.api.urls'))
+    path('block/', include('block.api.urls')),
+    path('curriculum/', include('curriculum.api.urls'))
 ]

@@ -1,7 +1,11 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from discipline.api.views import GetDisciplineView
+from discipline.api.views import DisciplineViewSet
+
+router = DefaultRouter()
+router.register(r'', DisciplineViewSet, basename='discipline')
 
 urlpatterns = [
-    path('<int:pk>', GetDisciplineView.as_view())
+    path('', include(router.urls)),
 ]
