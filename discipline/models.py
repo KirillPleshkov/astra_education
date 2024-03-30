@@ -9,7 +9,7 @@ user_model = get_user_model()
 class Discipline(models.Model):
     """Рабочие программы дисциплин"""
 
-    name = models.CharField(max_length=100, verbose_name='название')
+    name = models.CharField(max_length=100, verbose_name='название', unique=True)
     short_description = models.TextField(blank=True, default='', verbose_name='краткое описание')
 
     modules = models.ManyToManyField(Module, through='DisciplineModule', related_name='disciplines')

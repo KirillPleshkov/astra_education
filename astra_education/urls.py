@@ -8,5 +8,6 @@ urlpatterns = [
     path('discipline/', include('discipline.api.urls')),
     path('module/', include('module.api.urls')),
     path('block/', include('block.api.urls')),
-    path('curriculum/', include('curriculum.api.urls'))
+    path('curriculum/', include('curriculum.api.urls')),
+    path('skills_products/', include('skills_products.api.urls'))
 ]

@@ -8,7 +8,7 @@ from module.models import Module
 class ModuleNamesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
-        fields = ('pk', 'name')
+        fields = ('id', 'name')
 
 
 class ModuleSerializer(serializers.ModelSerializer):

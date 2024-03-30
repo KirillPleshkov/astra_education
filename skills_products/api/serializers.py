@@ -7,11 +7,11 @@ class SkillSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Skill
-        fields = ('pk', 'name')
+        fields = ('id', 'name')
 
 
 class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('pk', 'name')
+        fields = ('id', 'name')

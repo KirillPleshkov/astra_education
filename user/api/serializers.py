@@ -17,4 +17,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('email', 'first_name', 'last_name', 'role', 'linguist_roles')
+        fields = ('email', 'first_name', 'last_name', 'role', 'linguist_roles', 'curriculum')
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'first_name', 'last_name')

@@ -29,3 +29,9 @@ class DisciplineViewSet(viewsets.ViewSet):
         discipline_name = request.query_params.get('name')
         serializer = self.get_serializer_class()(self.queryset.filter(name__icontains=discipline_name), many=True)
         return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.get_serializer_class()(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
