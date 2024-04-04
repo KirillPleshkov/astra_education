@@ -1,3 +1,4 @@
+from django.db.models import ProtectedError
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -35,3 +36,24 @@ class DisciplineViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    def destroy(self, request, pk):
+        discipline = get_object_or_404(self.queryset, pk=pk)
+        try:
+            discipline.delete()
+            return Response(True)
+        except ProtectedError:
+            curriculums = [i.name for i in discipline.curriculums.all()]
+            return Response({'detail': {'linked_curriculums': curriculums}}, status=404)
+
+    def update(self, request, pk=None):
+        instance = get_object_or_404(self.queryset, pk=pk)
+        # self.check_object_permissions(self.request, instance)
+
+        serializer = self.serializer_class(data=request.data, instance=instance)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+

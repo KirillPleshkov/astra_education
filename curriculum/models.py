@@ -40,7 +40,7 @@ class CurriculumDiscipline(models.Model):
     """Связь многие ко многим между учебным планом и дисциплиной"""
 
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE, verbose_name='учебный план')
-    discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE, verbose_name='дисциплина')
+    discipline = models.ForeignKey(Discipline, on_delete=models.PROTECT, verbose_name='дисциплина')
     users = models.ManyToManyField(get_user_model(), through='CurriculumDisciplineUser', verbose_name='преподаватели',
                                    related_name='curriculum_disciplines')
 
@@ -56,7 +56,7 @@ class CurriculumDiscipline(models.Model):
 
 
 class CurriculumDisciplineUser(models.Model):
-    """Связь многие ко многим между учебным планом и дисциплиной и преподавателем"""
+    """Связь многие ко многим между учебным планом, дисциплиной и преподавателем"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='преподаватель')
     curriculum_discipline = models.ForeignKey(CurriculumDiscipline, on_delete=models.CASCADE,
