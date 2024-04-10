@@ -5,14 +5,14 @@ from discipline.api.serializers import DisciplineSerializer, DisciplineNameSeria
 from user.api.serializers import UserSerializer, TeacherSerializer
 
 
-class EducationalLevelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EducationalLevel
-        fields = '__all__'
+class EducationalLevelSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=50)
+    study_period = serializers.IntegerField(read_only=True)
 
 
 class CurriculumDisciplineUserSerializer(serializers.ModelSerializer):
-    user = TeacherSerializer(read_only=True)
+    user = TeacherSerializer()
 
     class Meta:
         model = CurriculumDisciplineUser
@@ -20,8 +20,8 @@ class CurriculumDisciplineUserSerializer(serializers.ModelSerializer):
 
 
 class CurriculumDisciplineSerializer(serializers.ModelSerializer):
-    teachers = CurriculumDisciplineUserSerializer(many=True, read_only=True, source='curriculumdisciplineuser_set')
-    discipline = DisciplineNameSerializer(read_only=True)
+    teachers = CurriculumDisciplineUserSerializer(many=True, source='curriculumdisciplineuser_set')
+    discipline = DisciplineNameSerializer()
 
     class Meta:
         model = CurriculumDiscipline
@@ -29,9 +29,20 @@ class CurriculumDisciplineSerializer(serializers.ModelSerializer):
 
 
 class CurriculumSerializer(serializers.ModelSerializer):
-    disciplines = CurriculumDisciplineSerializer(many=True, read_only=True, source='curriculumdiscipline_set')
-    educational_level = EducationalLevelSerializer(read_only=True)
+    disciplines = CurriculumDisciplineSerializer(many=True, source='curriculumdiscipline_set')
+    educational_level = EducationalLevelSerializer()
 
     class Meta:
         model = Curriculum
         fields = ('id', 'name', 'disciplines', 'educational_level')
+
+    def create(self, validated_data):
+        educational_level_name = validated_data.pop('educational_level').get('name')
+        educational_level = EducationalLevel.objects.get(name=educational_level_name)
+        return Curriculum.objects.create(name=validated_data.pop('name'), educational_level=educational_level)
+
+
+class CurriculumNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Curriculum
+        fields = ('id', 'name')
