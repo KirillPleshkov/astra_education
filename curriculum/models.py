@@ -49,7 +49,7 @@ class CurriculumDiscipline(models.Model):
     class Meta:
         verbose_name = 'дисциплина учебного плана'
         verbose_name_plural = 'дисциплины учебного плана'
-        unique_together = ('discipline', 'curriculum', 'semester')
+        unique_together = ('discipline', 'curriculum')
 
     def __str__(self):
         return f'Учебный план: {self.curriculum.name}, дисциплина: {self.discipline.name}, семестр: {self.semester}'
@@ -58,7 +58,7 @@ class CurriculumDiscipline(models.Model):
 class CurriculumDisciplineUser(models.Model):
     """Связь многие ко многим между учебным планом, дисциплиной и преподавателем"""
 
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='преподаватель')
+    user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, verbose_name='преподаватель')
     curriculum_discipline = models.ForeignKey(CurriculumDiscipline, on_delete=models.CASCADE,
                                               verbose_name='дисциплина учебного плана')
 

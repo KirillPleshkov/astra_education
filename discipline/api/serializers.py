@@ -7,13 +7,13 @@ from skills_products.api.serializers import SkillSerializer, ProductSerializer
 from skills_products.models import Product, Skill
 
 
-class DisciplineElementSerializer(serializers.Serializer):
+class ElementSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField(max_length=100)
 
 
 class DisciplineModuleSerializer(serializers.ModelSerializer):
-    module = DisciplineElementSerializer()
+    module = ElementSerializer()
 
     class Meta:
         model = DisciplineModule
@@ -21,8 +21,8 @@ class DisciplineModuleSerializer(serializers.ModelSerializer):
 
 
 class DisciplineSerializer(serializers.ModelSerializer):
-    skills = DisciplineElementSerializer(many=True)
-    products = DisciplineElementSerializer(many=True)
+    skills = ElementSerializer(many=True)
+    products = ElementSerializer(many=True)
     modules = DisciplineModuleSerializer(many=True, source='disciplinemodule_set')
 
     class Meta:

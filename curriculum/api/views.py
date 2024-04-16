@@ -1,17 +1,24 @@
+from django.contrib.auth import get_user_model
+from django.db.models import ProtectedError
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from curriculum.api.serializers import CurriculumSerializer, CurriculumNameSerializer
-from curriculum.models import Curriculum
+from curriculum.api.serializers import CurriculumSerializer, CurriculumNameSerializer, EducationalLevelSerializer
+from curriculum.models import Curriculum, EducationalLevel, CurriculumDisciplineUser
+from user.api.serializers import TeacherSerializer
+
+user_model = get_user_model()
 
 
 class CurriculumViewSet(viewsets.ViewSet):
-    # permission_classes = [IsAuthenticated, IsOwnerStudent]
+    permission_classes = [IsAuthenticated]
     queryset = Curriculum.objects.all()
 
     def get_serializer_class(self):
-        if self.action in ('retrieve', 'create'):
+        if self.action in ('retrieve', 'create', 'update'):
             return CurriculumSerializer
         return CurriculumNameSerializer
 
@@ -31,4 +38,35 @@ class CurriculumViewSet(viewsets.ViewSet):
         serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        return Response(serializer.data)
+
+    def destroy(self, request, pk):
+        curriculum = get_object_or_404(self.queryset, pk=pk)
+        try:
+            curriculum.delete()
+            return Response(True)
+        except ProtectedError:
+            curriculum_discipline_user = CurriculumDisciplineUser.objects.filter(
+                curriculum_discipline__discipline__in=curriculum.disciplines.all())
+            users = [i.user for i in curriculum_discipline_user]
+            serializer = TeacherSerializer(users, many=True)
+            return Response({'detail': {'linked_students': serializer.data}}, status=404)
+
+    def update(self, request, pk=None):
+        instance = get_object_or_404(self.queryset, pk=pk)
+        # self.check_object_permissions(self.request, instance)
+
+        serializer = self.get_serializer_class()(data=request.data, instance=instance)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
+
+
+class GetEducationalLevelView(APIView):
+    serializer_class = EducationalLevelSerializer
+
+    def get(self, request):
+        serializer = self.serializer_class(EducationalLevel.objects.all(), many=True)
         return Response(serializer.data)
