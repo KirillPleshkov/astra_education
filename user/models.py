@@ -57,7 +57,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
-    def clean(self):
+    def clean_linguist_roles(self):
         from django.core.exceptions import ValidationError
         if self.role == get_user_model().Roles.STUDENT and self.linguist_roles.count():
             raise ValidationError('Пользователь с ролью студент не может иметь лингвистическую роль')

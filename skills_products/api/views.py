@@ -18,6 +18,12 @@ class SkillViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(self.queryset.filter(name__icontains=skill_name), many=True)
         return Response(serializer.data)
 
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
 
 class ProductViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
@@ -27,4 +33,10 @@ class ProductViewSet(viewsets.ViewSet):
     def list(self, request):
         product_name = request.query_params.get('name')
         serializer = self.serializer_class(self.queryset.filter(name__icontains=product_name), many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)

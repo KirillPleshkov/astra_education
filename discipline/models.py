@@ -26,7 +26,7 @@ class DisciplineModule(models.Model):
     """Связь многие ко многим дисциплины и учебного модуля"""
 
     discipline = models.ForeignKey(Discipline, on_delete=models.CASCADE, verbose_name='дисциплина')
-    module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name='модуль')
+    module = models.ForeignKey(Module, on_delete=models.PROTECT, verbose_name='модуль')
     position = models.IntegerField(verbose_name='позиция')
 
     class Meta:

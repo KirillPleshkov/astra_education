@@ -1,3 +1,4 @@
+from django.db.models import ProtectedError
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -41,3 +42,12 @@ class ModuleViewSet(viewsets.ViewSet):
         module_name = request.query_params.get('name')
         serializer = self.serializer_class(self.queryset.filter(name__icontains=module_name), many=True)
         return Response(serializer.data)
+
+    def destroy(self, request, pk):
+        module = get_object_or_404(self.queryset, pk=pk)
+        try:
+            module.delete()
+            return Response(True)
+        except ProtectedError:
+            disciplines = [i.name for i in module.disciplines.all()]
+            return Response({'detail': {'linked_disciplines': disciplines}}, status=404)
