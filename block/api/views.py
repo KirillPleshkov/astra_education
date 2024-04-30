@@ -34,7 +34,6 @@ class FileUploadView(APIView):
     def post(self, request, *args, **kwargs):
         file_serializer = BlockFilesSerializer(data=request.data)
         if file_serializer.is_valid():
-            print(file_serializer)
             file_serializer.save()
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
         else:

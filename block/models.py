@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.utils.deconstruct import deconstructible
 
@@ -33,7 +32,8 @@ class BlockFiles(models.Model):
     position = models.IntegerField(verbose_name='позиция')
     is_saved = models.BooleanField(verbose_name='Сохранен', default=False)
 
-    block = models.ForeignKey('Block', on_delete=models.CASCADE, related_name='files', verbose_name='блок')
+    block = models.ForeignKey('Block', on_delete=models.CASCADE, related_name='files', verbose_name='блок', null=True,
+                              blank=True)
 
     class Meta:
         verbose_name = 'файл блока'
