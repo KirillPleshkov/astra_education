@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>{{ curriculum.name }}</title>
+    <meta charset="utf-8"/>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+        }
+
+        @font-face {
+            font-family: 'Times New Roman';
+            src: url("/static/fonts/Times New Roman/timesnewromanpsmt.ttf");
+        }
+
+        body {
+            font-family: "Times New Roman";
+        }
+
+        .title {
+            font-size: 26px;
+            color: #1469c8;
+            padding-bottom: 10px;
+            border-bottom: 1px solid black;
+        }
+
+        .block_title {
+            padding-top: 20px;
+            font-size: 20px;
+            color: #1469c8;
+            padding-bottom: 0;
+        }
+
+        .elements {
+            padding-top: 8px;
+            padding-left: 10px;
+            padding-bottom: 8px;
+            background-color: #eee;
+            margin-top: 20px;
+            min-width: 100px;
+        }
+
+        .element_text {
+            padding-top: 10px;
+            font-size: 16px;
+        }
+
+        .discipline_title {
+            font-size: 26px;
+            color: #1469c8;
+        }
+    </style>
+</head>
+<body>
+<h1 class="title">{{ curriculum.name }}</h1>
+
+<h1 class="block_title">Уровень обучения</h1>
+<div class="elements"><span
+        class="element_text">{{ curriculum.educational_level.name }} {{ curriculum.educational_level.study_period }}
+    <span>
+        {% if  curriculum.educational_level.study_period == 5 %}
+            лет
+        {% else %}
+            года
+        {% endif %}
+    </span></span>
+</div>
+
+<h1 class="block_title">Компетенции</h1>
+{% for skill in skills %}
+    <div class="elements">
+        <span class="element_text">{{ skill.name }}</span>
+    </div>
+{% endfor %}
+
+<h1 class="block_title">Продукты ПАО Группы Астра</h1>
+{% for product in products %}
+    <div class="elements">
+        <span class="element_text">{{ product.name }}</span>
+    </div>
+{% endfor %}
+
+<h1 class="discipline_title">Дисциплины</h1>
+{% for semester in semesters %}
+    <div>
+        <h1 class="block_title">Семестр {{ semester }}</h1>
+        {% for discipline in disciplines %}
+            {% if discipline.semester == semester %}
+                <div class="elements">
+                    <span class="element_text">{{ discipline.discipline.name }}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+
+
+</body>
+</html>

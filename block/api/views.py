@@ -20,10 +20,11 @@ class FileDownloadView(APIView):
 
     def get(self, request, pk):
         queryset = BlockFiles.objects.get(pk=pk)
+        file_name = queryset.file.name.split('/')[-1]
         file_handle = queryset.file.path
         document = open(file_handle, 'rb')
         response = HttpResponse(FileWrapper(document), content_type='application/msword')
-        response['Content-Disposition'] = 'attachment; filename="%s"' % queryset.file.name
+        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
         return response
 
 

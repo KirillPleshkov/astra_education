@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.deconstruct import deconstructible
+from rest_framework.reverse import reverse
 
 from discipline.models import Discipline
 from module.models import Module
@@ -40,6 +41,12 @@ class BlockFiles(models.Model):
         verbose_name_plural = 'файлы блока'
 
     def __str__(self):
+        return self.file.name.split('/')[-1]
+
+    def get_absolute_url(self):
+        return reverse('block:file_download', kwargs={'pk': self.pk})
+
+    def get_name(self):
         return self.file.name.split('/')[-1]
 
 

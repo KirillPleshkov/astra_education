@@ -61,3 +61,4 @@ class DisciplineNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Discipline
         fields = ('name', 'id')
+

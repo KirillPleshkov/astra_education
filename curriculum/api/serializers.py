@@ -13,8 +13,14 @@ class EducationalLevelSerializer(serializers.Serializer):
     study_period = serializers.IntegerField(read_only=True)
 
 
+class Teachers(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    first_name = serializers.CharField(max_length=50)
+    last_name = serializers.CharField(max_length=50)
+
+
 class CurriculumDisciplineUserSerializer(serializers.ModelSerializer):
-    user = TeacherSerializer()
+    user = Teachers()
 
     class Meta:
         model = CurriculumDisciplineUser
@@ -70,3 +76,13 @@ class CurriculumNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Curriculum
         fields = ('id', 'name')
+
+
+class TeacherCurriculumDisciplinesSerializer(serializers.ModelSerializer):
+    curriculum = CurriculumNameSerializer()
+    discipline = DisciplineNameSerializer()
+    users = TeacherSerializer(many=True)
+
+    class Meta:
+        model = CurriculumDiscipline
+        fields = '__all__'

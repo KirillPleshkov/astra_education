@@ -33,6 +33,7 @@ class DisciplineModule(models.Model):
         verbose_name = 'модуль дисциплины'
         verbose_name_plural = 'модули дисциплины'
         unique_together = ('discipline', 'module')
+        ordering = ('position',)
 
     def __str__(self):
         return f'Дисциплина: {self.discipline.name}, модуль: {self.module.name}'
